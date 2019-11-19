@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<title>iritofu</title>
+</head>
+<body>
+<h1>Hello, Again</h1>
+<div>
+  <p>Process: <%=h $wakeup.strftime("%Y-%m-%d %H:%M:%S") %>　(<%= sprintf("%.2f", Time.now - $wakeup) %>sec)</p>
+  <p>Session: <%=h @session.start_at.strftime("%Y-%m-%d %H:%M:%S") %>　(<%= sprintf("%.2f", Time.now - @session.start_at) %>sec)</p>
+</div>
+<h2>Status</h2>
+<input type="text" onchange="callApiUpdate()" id="update"/>
+<div>
+  <ul id="status"></ul>
+</div>
+</body>
+<script>
+var update_text = document.querySelector('#update');
+var status_list = document.querySelector('#status');
+var event = new EventSource('/event');
+event.onmessage = function(e) {
+  var newElement = document.createElement("li");
+  newElement.textContent = "message: " + e.data;
+  status_list.insertBefore(newElement, status_list.firstChild);
+};
+
+function postState(url, data) {
+    var x = new XMLHttpRequest();
+    var fd = new FormData();
+
+    for(name in data) {
+    fd.append(name, data[name]);
+    }
+
+    x.onreadystatechange = function() {
+    if (x.readyState == 4 && x.status == 200) {
+        var state = JSON.parse(x.responseText);
+        /* apply_state(state); */
+    }
+    }
+    
+    x.open("POST", url);
+    x.withCredentials = true;
+    x.send(fd);
+}
+
+function callApiUpdate() {
+  url = '/api';
+
+  info = {status: update_text.value};
+
+  data = {
+    tofu_id: 'api',
+    tofu_cmd: 'update',
+    json: JSON.stringify(info)
+  };
+  console.log(data);
+  postState(url, data);
+  update_text.value = "";
+}
+</script>
+</html>
