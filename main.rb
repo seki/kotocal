@@ -68,7 +68,6 @@ server = WEBrick::HTTPServer.new({:Port => ENV['PORT'].to_i})
 server.mount_proc('/') {|req, res|
   res.content_type = 'text/calendar'
   res.body = MyCal.new.to_ical
-  puts res.body
 }
 
 trap(:INT){exit!}
