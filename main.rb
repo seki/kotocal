@@ -42,7 +42,7 @@ class MyCal
 
   def make_today
     today = Date.today.strftime("%Y%m%d")
-    Random.srand(today.to_i)
+    # Random.srand(today.to_i)
     size = @timetable.size - 2
     leaf = @leaf.sort_by {rand}[0, size] + ["もうやめなよ"]
 
