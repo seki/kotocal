@@ -4,7 +4,7 @@ require 'icalendar'
 class MyCal
   def initialize
     @calendar = Icalendar::Calendar.new
-    @calendar.append_custom_property("X-WR-CALNAME;VALUE=TEXT", "ゴロクオラクル")
+    @calendar.append_custom_property("X-WR-CALNAME;VALUE=TEXT", "ミワクルオラクル")
     @calendar.timezone do |t|
       t.tzid = 'Asia/Tokyo'
       t.standard do |s|
@@ -33,6 +33,7 @@ class MyCal
 なにもしてないの？
 なにしてるの？
 様子見ない
+そう作ってあります
 なんでうまくいくんだっけ？
 焼2水1🥟
 グラスワインの赤🍷
