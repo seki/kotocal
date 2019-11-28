@@ -44,6 +44,7 @@ class MyCal
 真似してもいいよ
 ふつうにやってた！
 よーし！
+連打してたわ
     )
     make_today
   end
