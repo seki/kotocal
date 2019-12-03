@@ -3,17 +3,6 @@ require 'icalendar'
 
 class MyCal
   def initialize
-    @calendar = Icalendar::Calendar.new
-    @calendar.append_custom_property("X-WR-CALNAME;VALUE=TEXT", "71956")
-    @calendar.timezone do |t|
-      t.tzid = 'Asia/Tokyo'
-      t.standard do |s|
-        s.tzoffsetfrom = '+0900'
-        s.tzoffsetto   = '+0900'
-        s.tzname       = 'JST'
-        s.dtstart      = '19700101T000000'
-      end
-    end
     @timetable = ["091500", "111500", "131500", "151500", "171500", "181500"]
     @leaf = %w(
 くくく
@@ -50,6 +39,18 @@ class MyCal
   end
 
   def make_today
+    @calendar = Icalendar::Calendar.new
+    @calendar.append_custom_property("X-WR-CALNAME;VALUE=TEXT", "71956")
+    @calendar.timezone do |t|
+      t.tzid = 'Asia/Tokyo'
+      t.standard do |s|
+        s.tzoffsetfrom = '+0900'
+        s.tzoffsetto   = '+0900'
+        s.tzname       = 'JST'
+        s.dtstart      = '19700101T000000'
+      end
+    end
+
     today = Date.today.strftime("%Y%m%d")
     # Random.srand(today.to_i)
     size = @timetable.size - 2
@@ -69,18 +70,25 @@ class MyCal
         end
       end
     end
+    @today = today
   end
 
   def to_ical
+    make_today if expired?
     @calendar.to_ical
-  end 
+  end
+
+  def expired?
+    @today != Date.today.strftime("%Y%m%d")
+  end
 end
 
 server = WEBrick::HTTPServer.new({:Port => ENV['PORT'].to_i})
+mycal = MyCal.new
 
 server.mount_proc('/') {|req, res|
   res.content_type = 'text/calendar'
-  res.body = MyCal.new.to_ical
+  res.body = mycal.to_ical
 }
 
 trap(:INT){exit!}
