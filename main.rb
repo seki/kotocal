@@ -34,6 +34,7 @@ class MyCal
 ふつうにやってた！
 よーし！
 連打してたわ
+うどんにコシがない！
     )
     make_today
   end
