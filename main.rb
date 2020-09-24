@@ -1,5 +1,6 @@
 require 'webrick'
 require 'icalendar'
+require 'aws-sdk-s3'
 
 class MyCal
   def initialize
@@ -84,13 +85,25 @@ class MyCal
   end
 end
 
-server = WEBrick::HTTPServer.new({:Port => ENV['PORT'].to_i})
+class MyS3
+  def initialize
+    credentials = Aws::Credentials.new(ENV['S3_ACCESS_KEY_ID'], ENV['S3_SECRET_ACCESS_KEY'])
+    region = 'ap-northeast-1'
+    Aws.config.update(
+      region: region,
+      credentials: credentials
+    )
+    @s3 = Aws::S3::Client.new
+    @bucket = "719.druby.work"
+  end
+  attr_reader :s3, :bucket
+
+  def put_object(key, body)
+    @s3.put_object(bucket: @bucket, key: key, body: body)
+  end
+end
+
 mycal = MyCal.new
+s3 = MyS3.new
 
-server.mount_proc('/') {|req, res|
-  res.content_type = 'text/calendar'
-  res.body = mycal.to_ical
-}
-
-trap(:INT){exit!}
-server.start
+s3.put_object("719.druby.work.ics", mycal.to_ical)
