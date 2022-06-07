@@ -20,7 +20,7 @@ GEM
     icalendar (2.5.3)
       ice_cube (~> 0.16)
     ice_cube (0.16.3)
-    jmespath (1.4.0)
+    jmespath (1.6.1)
 
 PLATFORMS
   ruby
