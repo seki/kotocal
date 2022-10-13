@@ -1,4 +1,3 @@
-require 'webrick'
 require 'icalendar'
 require 'aws-sdk-s3'
 
